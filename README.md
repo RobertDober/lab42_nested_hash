@@ -19,7 +19,7 @@ Then `get` lets us access elements
 
 ```ruby
     nh.get('a').assert == 1
-    ng.get('b.c').assert == 2
+    nh.get('b.c').assert == 2
 ```
 
 or _subhashes_:
