@@ -35,3 +35,11 @@ or _subhashes_:
     end
 ```
 
+but like `Hash#fetch` a default value or block can remedy at that
+
+```ruby
+    nh.get( 'c', :default ).assert == :default
+    nh.get( 'c' ){ |key| key + key }.assert == 'cc'
+```
+
+

@@ -1,7 +1,7 @@
 module Lab42
   class NHash
     attr_reader :hashy
-    def get keyexpr
+    def get keyexpr, *default, &defblock
       keys = keyexpr.to_s.split( '.' )
       found = @indifferent_access ? _get_indiff( keys ) : _get( keys )
       case found
@@ -10,6 +10,9 @@ module Lab42
       else
         found
       end
+    rescue KeyError
+      raise if default.empty? && defblock.nil?
+      default.empty? ? defblock.(keyexpr) : default.first
     end
 
     def import_options options
