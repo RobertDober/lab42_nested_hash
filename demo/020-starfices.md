@@ -1,7 +1,7 @@
 
 # Lab42::NHash QED 
 
-## Pre/Suffixed Access
+## Prefixed Access
 
 YAML documents are typically quite nested and often
 a common prefix (and less often a common suffix) is
@@ -21,24 +21,29 @@ used in a given context.
 
 ```
 
-Now **all** `get` keys are prefixed with a, let us demonstrate:
+Now `get` keys that start with a '.' are prefixed with a, let us demonstrate:
 
 ```ruby
-    nh.get( 'b.c' ).assert == 'abc'
+    nh.get( '.b.c' ).assert == 'abc'
 ```
 
-and of course this means that I cannot reprovide the prefix
+but not using the '.' as a prefix I can still access with an _absolute_ key path.
 
 ```ruby
-    nh.get( 'a', :default ).assert == :default
+    nh.get( 'a.b.c').assert == 'abc'
 ```
 
-However it might be convinient to override this behavior on
-a per request base, that is what `get!` is for:
+### Suffix and Combination of the two
 
 ```ruby
-    nh.get!( 'a' ).assert.kind_of? NHash
+    nh.push_suffix 'c'
+    nh.get( 'a.b.' ).assert == 'abc'
+    nh.get( 'x.b.' ).assert == 'xbc'
+
+    nh.get( '.b.' ).assert == 'abc'
+    nh.get( 'x.b.'  ).assert == 'xbc'
 ```
+
 
 ### The Stack
 
@@ -48,11 +53,34 @@ a given context in the program.
 
 ```ruby
     nh.push_prefix 'a.b'
-    nh.get('d').assert == 'abd'
+    nh.get('.d').assert == 'abd'
     2.times{ nh.pop_prefix }
-    nh.get('a.b.d').assert == 'abd'
+    NHash::IllegalStateError.assert.raised? do
+      nh.get('.d').assert == 'abd'
+    end
 ```
 
+### Temporary Stack Modifiaction with the With Pattern
+
+An often more convenient way to push values to the stacks is the `with` pattern that will
+ensure that the stack is popped again at the end of the provided block.
 
 
+```ruby
+    nh.with_pefix 'a' do |x|
+      # self is passed into the block for convenience
+      x.assert == nh
+
+      # fetch is an alias to get
+      x.fetch( '.b.c' ).assert == 'abc'
+    end
+```
+
+Outside the block the stack will have been restored
+
+```ruby
+    NHash::IllegalStateError.assert.raised? do
+      nh.fetch '.b.c'
+    end
+```
 
