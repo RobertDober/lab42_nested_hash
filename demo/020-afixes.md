@@ -87,3 +87,22 @@ Outside the block the stack will have been restored
     end
 ```
 
+Works with suffix too
+
+```ruby
+    nh.with_suffix 'd' do
+      nh.get('a.b.').assert == 'abd'
+    end
+```
+
+And as it would be combersome to nest a `with_prefix` and a `with_suffix` there is a convenience method
+`with_afixes` at your disposal:
+
+```ruby
+    nh.with_affixes 'a', 'c' do
+      nh.get('.b.').assert == 'abc'
+    end
+```
+
+
+
