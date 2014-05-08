@@ -1,7 +1,10 @@
 
 # Lab42::NHash QED 
 
-## Prefixed Access
+## Afixed Access
+
+
+### Prefixes
 
 YAML documents are typically quite nested and often
 a common prefix (and less often a common suffix) is
@@ -33,7 +36,7 @@ but not using the '.' as a prefix I can still access with an _absolute_ key path
     nh.get( 'a.b.c').assert == 'abc'
 ```
 
-### Suffix and Combination of the two
+### Suffixes and Combination of both
 
 ```ruby
     nh.push_suffix 'c'
@@ -67,7 +70,7 @@ ensure that the stack is popped again at the end of the provided block.
 
 
 ```ruby
-    nh.with_pefix 'a' do |x|
+    nh.with_prefix 'a' do |x|
       # self is passed into the block for convenience
       x.assert == nh
 
