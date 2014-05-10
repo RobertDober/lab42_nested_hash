@@ -3,12 +3,18 @@
 
 ## Fallbacks
 
+Fallbacks are a combination of the block that can be provided to `Hash#fetch` and the block in the
+`Hash.new` method.
+
+Fallbacks are triggered whenever a `get/fetch` call would trigger a `KeyError`. The handler is
+defined dynamically as it can be pushed to and popped off a fallback stack. Inside the handler
+the special method `again` can be called to reexecute the `get/fetch`. If no changes have been
+made to the `NHash` instance before `again` is invoked the fallback logic will detect the loop
+and raise a `KeyError` instead.
 
 ### Base Case
 
-In case a fallback is defined, it is triggerd whenever a `get/fetch` access would raise a `KeyError`.
-
-When defining a fallback this is done via a callback block.
+When defining a fallback this is done via a callback block or lambda param.
 
 Here is a trivial example
 
@@ -28,7 +34,20 @@ Here is a trivial example
     end
 
 ```
-Of course the `with_*` pattern is implemented too:
+
+The lambda parameter takes precedence by the way.
+
+```ruby
+    nh.push_fallback ->{ 42 } do 43 end
+    nh.fetch('c').assert == 42
+    nh.pop_fallback
+```
+
+You might have spotted the necessity to invoke `pop_fallback` in order to
+make the next (actually the after next assertion) hold.
+
+That is why most of the time it is covinient to use the `with_*` pattern
+
 
 ```ruby
     nh.with_fallback ->{ 42 } do
@@ -42,7 +61,7 @@ Of course the `with_*` pattern is implemented too:
 
 ### Full Fallback API
 
-This base case is very close to using a `Hash` with a default but the `NHash` instance, which is also
+As mention above, this base case is very close to using a `Hash` with a default but the `NHash` instance, which is also
 passed into the callback is offering a much more poweful API.
 
 A common use case would be to change an affix if a contextual key is not found, e.g.
@@ -69,7 +88,9 @@ with the same parameters but in a different context
 ```
 
 It is important to notice that again needs to be used to avoid an endless loop when the fallback
-fails too!
+fails too, however, the fallback logic can (easily) detect that kind of a loop and when doing so
+it just raises a KeyError, because that's what it really is, right!
+
 
 ```ruby
     # And *not* StackOverflow

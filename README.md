@@ -5,7 +5,7 @@ A nested hash view with dotted deep access à la I18n.t of Rails and with option
 
 ## Get Access (combined keys with dot notation)
 
-Please see the [QED](http://rubyworks.github.io/qed/) demos [here](https://github.com/RobertDober/lab42_nested_hash/blob/master/demo/get_access/000-basic-examples.md) for detailed explainations and specifications:
+Please see the [QED](http://rubyworks.github.io/qed/) demos [here](https://github.com/RobertDober/lab42_nested_hash/blob/master/demo/000-basic-examples.md) for detailed explainations and specifications:
 
 ```ruby
     h = { "a" => 1,
@@ -32,7 +32,5 @@ or _subhashes_:
 ### Indifferent Access
 
 ### Prefix and Suffix Stacks
-
-## XPath Access
 
 ## Fallbacks
