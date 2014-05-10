@@ -5,8 +5,8 @@ module Lab42
 
       def pop_prefix; @prefix_stack.pop; self end
       def pop_suffix; @suffix_stack.pop; self end
-      def push_prefix pfx; @prefix_stack.push pfx; self end
-      def push_suffix sfx; @suffix_stack.push sfx; self end
+      def push_prefix pfx; @prefix_stack.push pfx.to_s; self end
+      def push_suffix sfx; @suffix_stack.push sfx.to_s; self end
 
       def current_prefix
         @prefix_stack
@@ -23,7 +23,7 @@ module Lab42
       def with_affixes pfx, sfx, &blk
         push_prefix pfx
         push_suffix sfx
-        blk.( self )
+        _invoke blk, self
       ensure
         pop_prefix
         pop_suffix
@@ -31,14 +31,14 @@ module Lab42
 
       def with_prefix pfx, &blk
         push_prefix pfx
-        blk.( self )
+        _invoke blk, self
       ensure
         pop_prefix
       end
 
       def with_suffix sfx, &blk
         push_suffix sfx
-        blk.( self )
+        _invoke blk, self
       ensure
         pop_suffix
       end

@@ -4,19 +4,17 @@ module Lab42
       def again
         raise IllegalStateError, "must not call again unless inside a fallback" if @fallbacks.empty?
         raise IllegalStateError, "must not call again before a failed get/fetch" if @fallback_params.empty?
-        raise KeyError, "#{@fallback_params.last.inspect} loop in again" if @fallback_invocations[@fallbacks.last][@fallback_params.last]
-        @fallback_invocations[@fallbacks.last][@fallback_params.last] = true
         get @fallback_params.last
-      ensure
-        @fallback_invocations[@fallbacks.last].delete @fallback_params.last
       end
 
       def fallback keyexpr, k
         raise k if @fallbacks.empty?
+        raise KeyError, "#{@fallback_params.last.inspect} loop in again" if @fallback_invocations[@fallbacks.last][keyexpr]
         @fallback_params.push keyexpr
+        @fallback_invocations[@fallbacks.last][keyexpr] = true
         _invoke @fallbacks.last, self
       ensure
-        @fallback_params.pop
+        @fallback_invocations[@fallbacks.last].delete @fallback_params.pop
       end
 
       def pop_fallback
@@ -37,14 +35,6 @@ module Lab42
         pop_fallback
       end
 
-      private
-      def _invoke a_proc, *args
-        if a_proc.arity < 0 || a_proc.arity == args.size
-          a_proc.( *args )
-        else
-          args.first.instance_exec(&a_proc)
-        end
-      end
     end # module Fallbacks
 
     include Fallbacks

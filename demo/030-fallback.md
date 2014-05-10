@@ -100,3 +100,95 @@ it just raises a KeyError, because that's what it really is, right!
 ```
 
 
+### Affix Related Helpers
+
+In order to achieve something useful in our fallback handlers we need either to do something unrelated to
+the `get/fetch` call that triggered the fallback (thus emulating Hash's default behavior) or, by changing
+the _context_ try again.
+
+It stands to reason that, _changing the context_ will be a synonym to changing the affix stacks. Here is
+an example that tries to get the correctly flected noun.
+
+```ruby
+    nouns = {
+      en: {
+        person: {
+          many: 'people',
+          one: 'person',
+          none: 'nobody'
+        },
+        sheep: {
+          one: 'sheep'
+        },
+        dog: {
+          many: 'dogs',
+          one: 'dog'
+        }
+      },
+      fr: {
+        person: {
+          many: 'gens',
+          one: 'personne'
+        }
+      } 
+    }
+    @nouns = NHash
+      .new( nouns )
+      .with_indifferent_access
+```
+
+As nobody and person is exactly the same word in French, (why are you blaming me?), we will contsruct
+fallbacks for none (contrieved, I know). As we also did not implement German yet and the French implementation is
+incomplete, we want a fallback mechanisme working like this:
+
+```ruby
+    @nouns
+      .push_fallback do
+        with_prefix :en do
+          again 
+        end
+      end
+      .push_fallback do
+        with_suffix :one do
+          again
+        end
+      end
+      .push_fallback do
+        with_suffix :none do
+          again
+        end
+      end
+```
+
+This is quite some code, difficult to read, but that comes from the general nature of the fallback
+mechanism.
+
+Here we want to fallback to the prefix `en`  and concerning the suffixes we want to fallback to
+`none` and `one` in that order, which is not easy to see when reading the code.
+
+It becomes clearer when applied, but yet...
+
+```ruby
+
+    def get_flection noun, unity: :one, lang: :en
+      @nouns.with_affixes lang, unity do |n|
+        n.get ".#{noun}."
+      end
+    end
+    
+```
+
+Now the following assertions hold:
+
+```ruby
+    get_flection( :sheep, lang: :de, unity: :many )
+      .assert == 'sheep'
+```
+
+
+
+
+#### The Affix Fallback Helpers
+
+As fallbacks as implemented here are a little complex their true value comes from the helpers
+we can (and have) implemented with them:

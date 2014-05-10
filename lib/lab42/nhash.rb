@@ -1,4 +1,5 @@
 require_relative './nhash/exceptions'
+require_relative './nhash/invocation'
 require_relative './nhash/affixes'
 require_relative './nhash/fallbacks'
 
