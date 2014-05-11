@@ -20,6 +20,30 @@ module Lab42
           end
         end
       end
+
+      def push_affix_lookup( prefixes: required, suffixes: required, suffixes_first: false )
+        if suffixes_first
+          suffixes.product( prefixes ).reverse.each do | suff, pref |
+            push_fallback do
+              with_suffix suff do
+                with_prefix pref do
+                  again
+                end
+              end
+            end
+          end
+        else
+          prefixes.product( suffixes ).reverse.each do | pref, suff |
+            push_fallback do
+              with_suffix suff do
+                with_prefix pref do
+                  again
+                end
+              end
+            end
+          end
+        end
+      end
     end # module LookupChains
     include LookupChains
   end # class NHash
