@@ -10,13 +10,13 @@ module Lab42
 
       def current_prefix
         @prefix_stack
-        .fetch( -1 ){ raise IllegalStateError, "prefix stack is empty" }
+        .fetch( -1, '' )
         .split( '.' )
       end
 
       def current_suffix
         @suffix_stack
-        .fetch( -1 ){ raise IllegalStateError, "suffix stack is empty" }
+        .fetch( -1, '' )
         .split( '.' )
       end
 

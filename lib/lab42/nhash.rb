@@ -2,6 +2,7 @@ require_relative './nhash/exceptions'
 require_relative './nhash/invocation'
 require_relative './nhash/affixes'
 require_relative './nhash/fallbacks'
+require_relative './nhash/lookup_chains'
 
 module Lab42
   class NHash
@@ -64,12 +65,11 @@ module Lab42
     end
 
     def init_options
-      @indifferent_access   = false
-      @suffix_stack         = []
-      @prefix_stack         = []
-      @fallbacks            = []
-      @fallback_params      = []
-      @fallback_invocations = Hash.new{ |h, k| h[k] = {} }
+      @indifferent_access       = false
+      @suffix_stack             = []
+      @prefix_stack             = []
+      @fallbacks                = []
+      @current_fallback_pointer = 0
     end
   end # class NHash
 end # module Lab42

@@ -58,7 +58,7 @@ a given context in the program.
     nh.push_prefix 'a.b'
     nh.get('.d').assert == 'abd'
     2.times{ nh.pop_prefix }
-    NHash::IllegalStateError.assert.raised? do
+    KeyError.assert.raised? do
       nh.get('.d').assert == 'abd'
     end
 ```
@@ -82,7 +82,7 @@ ensure that the stack is popped again at the end of the provided block.
 Outside the block the stack will have been restored
 
 ```ruby
-    NHash::IllegalStateError.assert.raised? do
+    KeyError.assert.raised? do
       nh.fetch '.b.c'
     end
 ```

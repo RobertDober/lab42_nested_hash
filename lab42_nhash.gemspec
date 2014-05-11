@@ -30,7 +30,7 @@ Typically YML loaded Hashes are used.}
   spec.add_development_dependency 'bundler', '~> 1.6'
   spec.add_development_dependency 'rspec', '~> 2.14'
   spec.add_development_dependency 'pry', '~> 0.9'
-  spec.add_development_dependency 'pry-nav', '~> 0.2'
+  spec.add_development_dependency 'pry-debugger', '~> 0.2'
   spec.add_development_dependency 'ae', '~> 1.8'
   spec.add_development_dependency 'qed', '~> 2.9'
   
