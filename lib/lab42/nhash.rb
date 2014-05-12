@@ -3,6 +3,7 @@ require_relative './nhash/invocation'
 require_relative './nhash/affixes'
 require_relative './nhash/fallbacks'
 require_relative './nhash/lookup_chains'
+require_relative './nhash/interpolation'
 
 module Lab42
   class NHash

@@ -26,6 +26,7 @@ Typically YML loaded Hashes are used.}
   spec.required_rubygems_version = '>= 2.2.2'
 
   spec.add_dependency 'forwarder2', '~> 0.2'
+  spec.add_dependency 'ruby_parser', '~> 3.6'
 
   spec.add_development_dependency 'bundler', '~> 1.6'
   spec.add_development_dependency 'rspec', '~> 2.14'
