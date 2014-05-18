@@ -9,8 +9,19 @@ module Lab42
       end
       alias_method :fetch!, :get!
 
-      private
+      def get_with_binding key, a_binding, *rst, &blk
+        with_binding a_binding do
+          get!( key, *rst, &blk )
+        end
+      end
+      def with_binding a_binding, &blk
+        push_binding a_binding
+        _invoke blk, self
+      ensure
+        pop_binding
+      end
 
+      private
       def current_binding
         @binding_stack.last || binding
       end

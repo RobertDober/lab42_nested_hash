@@ -38,10 +38,29 @@ As could be seen in the example above, the context in which the `<% ... %>` body
 of the `NHash` instance itself. However there is a possibility to provide any binding as a parameter
 
 ```ruby
-    def get; 1 end
-    nh.set_binding binding
+    def get *args; 1 end
+    nh.push_binding binding
     nh.get!(:sum).assert == '2'
 ```
+
+Again this implements the _with_ pattern:
+
+```ruby
+    nh.pop_binding
+    nh.get!(:sum).assert == '42'
+    nh.with_binding binding do
+      get!(:sum).assert == '2'
+    end
+    nh.get!(:sum).assert == '42'
+```
+
+But an even more concise form is availaible, a single method called `get_with_binding` 
+
+```ruby
+    nh.get_with_binding(:sum, binding).assert = '2'
+    nh.get!(:sum).assert == '42'
+```
+
 
 ### Compound Values
 
