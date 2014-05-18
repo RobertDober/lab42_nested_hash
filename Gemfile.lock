@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lab42_nhash (0.1.0.pre)
+    lab42_nhash (0.1.0)
       forwarder2 (~> 0.2)
       ruby_parser (~> 3.6)
 

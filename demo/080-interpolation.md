@@ -29,7 +29,7 @@ However `get!/fetch!` are made from a completely different kind.
 
 ```ruby
     nh.get!(:sum).assert == '42'
-    nh.fetch!(:result).assert == 'the sum is 42'
+    nh.get!(:result).assert == 'the sum is 42'
 ```
 
 ### Interpolation Context
@@ -75,27 +75,4 @@ get the current binding can be used as follows:
 ```ruby
     nh.get_with_current{ :sum }.assert == '2'
 ```
-
-
-
-### Compound Values
-
-It would be nice to interpolate compound values _lazily_. However, as we lose the `NHash` context for
-non `Hash` (say `Array`) values in this early versions of the gem we need to eagerly evaluate `ERB`
-templates inside the compound values.
-
-Here is a demonstration
-
-```ruby
-#    nh = NHash.new(
-#      'entries' => [ '<%= a %>', '<%= b >' ] )
-#    a = 1
-#    b = 2
-#    entries = nh.get! 'entries'
-#    entries.assert == %w{ 1 2 }
-```
-
-
-
-
 

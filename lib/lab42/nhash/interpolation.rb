@@ -30,12 +30,11 @@ module Lab42
 
       private
       def current_binding
-        @binding_stack.last || binding
+        @binding_stack.last || @default_binding || binding
       end
 
-      def _expand_result result
-        
-        ERB.new( result ).result( current_binding )
+      def _expand_result value
+        ERB.new( value ).result( current_binding )
       end
       
     end # module Interpolation

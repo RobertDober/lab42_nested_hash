@@ -1,11 +1,14 @@
 require 'forwarder'
 
+require_relative './nhash/class_methods'
+
 require_relative './nhash/exceptions'
 require_relative './nhash/invocation'
 require_relative './nhash/affixes'
 require_relative './nhash/fallbacks'
 require_relative './nhash/lookup_chains'
 require_relative './nhash/interpolation'
+require_relative './nhash/enum'
 
 module Lab42
   class NHash
@@ -16,16 +19,18 @@ module Lab42
 
     attr_reader :hashy
 
+    def export_options
+      { indifferent_access: @indifferent_access,
+        binding_stack: @binding_stack.dup,
+        default_binding: @default_binding
+      }
+    end
+
     def get keyexpr, *default, &defblock
       keys = keyexpr.to_s.split( '.' )
       keys = complete_keys keys.reject(&:empty?), use_prefix: keys.first.empty?, use_suffix: keyexpr[-1] == '.'
       found = @indifferent_access ? _get_indiff( keys ) : _get( keys )
-      case found
-      when Hash
-        self.class.new( found ).import_options export_options
-      else
-        found
-      end
+      self.class.from_value found, export_options
     rescue KeyError => k
       return fallback keyexpr, k if default.empty? && defblock.nil?
       default.empty? ? defblock.(keyexpr) : default.first
@@ -34,6 +39,8 @@ module Lab42
 
     def import_options options
       @indifferent_access = options[:indifferent_access]
+      @binding_stack      = options[:binding_stack] || []
+      @default_binding    = options[:default_binding] # if options[:default_binding]
       self
     end
 
@@ -62,9 +69,6 @@ module Lab42
         partial_hash.fetch( key_element ){ partial_hash.fetch key_element.to_sym }
       end
     end
-    def export_options
-      { indifferent_access: @indifferent_access }
-    end
 
     def initialize hashy
       @hashy = hashy
@@ -79,6 +83,7 @@ module Lab42
 
       @fallbacks                = []
       @current_fallback_pointer = 0
+      @default_binding          = nil
     end
   end # class NHash
 end # module Lab42
