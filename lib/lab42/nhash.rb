@@ -1,3 +1,5 @@
+require 'forwarder'
+
 require_relative './nhash/exceptions'
 require_relative './nhash/invocation'
 require_relative './nhash/affixes'
@@ -7,6 +9,10 @@ require_relative './nhash/interpolation'
 
 module Lab42
   class NHash
+
+    extend Forwarder
+    forward :pop_binding, to: :@binding_stack, as: :pop
+    forward :push_binding, to: :@binding_stack, as: :push
 
     attr_reader :hashy
 
@@ -69,6 +75,8 @@ module Lab42
       @indifferent_access       = false
       @suffix_stack             = []
       @prefix_stack             = []
+      @binding_stack            = []
+
       @fallbacks                = []
       @current_fallback_pointer = 0
     end

@@ -32,6 +32,35 @@ However `get!/fetch!` are made from a completely different kind.
     nh.fetch!(:result).assert == 'the sum is 42'
 ```
 
+### Interpolation Context
+
+As could be seen in the example above, the context in which the `<% ... %>` body is evaluated is that
+of the `NHash` instance itself. However there is a possibility to provide any binding as a parameter
+
+```ruby
+    def get; 1 end
+    nh.set_binding binding
+    nh.get!(:sum).assert == '2'
+```
+
+### Compound Values
+
+It would be nice to interpolate compound values _lazily_. However, as we lose the `NHash` context for
+non `Hash` (say `Array`) values in this early versions of the gem we need to eagerly evaluate `ERB`
+templates inside the compound values.
+
+Here is a demonstration
+
+```ruby
+#    nh = NHash.new(
+#      'entries' => [ '<%= a %>', '<%= b >' ] )
+#    a = 1
+#    b = 2
+#    entries = nh.get! 'entries'
+#    entries.assert == %w{ 1 2 }
+```
+
+
 
 
 

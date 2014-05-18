@@ -1,4 +1,5 @@
-require_relative "../lib/lab42/nhash/auto_import"
+# require_relative "../lib/lab42/nhash/auto_import"
+require 'lab42/nhash/auto_import'
 
 PROJECT_ROOT = File.expand_path "../..", __FILE__
 Dir[File.join(PROJECT_ROOT,"spec/support/**/*.rb")].each {|f| require f}
