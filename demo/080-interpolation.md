@@ -61,6 +61,22 @@ But an even more concise form is availaible, a single method called `get_with_bi
     nh.get!(:sum).assert == '42'
 ```
 
+### Block Form For Current Binding
+
+In order to replace the frequent use case:
+
+```ruby
+    nh.get_with_binding :sum, binding
+```
+
+with a more concise form a method acceting a block parameter, from which it can
+get the current binding can be used as follows:
+
+```ruby
+    nh.get_with_current{ :sum }.assert == '2'
+```
+
+
 
 ### Compound Values
 

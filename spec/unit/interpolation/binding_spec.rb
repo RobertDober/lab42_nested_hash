@@ -53,7 +53,14 @@ describe NHash do
         outside = subject.get! :sum
         inside  = subject.get_with_binding :sum, binding
         outside += subject.get! :sum
+        expect( outside + inside ).to eq '43432'
       end
     end # context :get_with_binding
+
+    context :get_with_current do 
+      it 'evaluates with the current binding' do
+        expect( subject.get_with_current{ :sum } ).to eq '2'
+      end
+    end # context :get_with_current
   end # context :Interpolation
 end # describe NHash

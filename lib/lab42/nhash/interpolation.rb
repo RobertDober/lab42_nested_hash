@@ -14,6 +14,13 @@ module Lab42
           get!( key, *rst, &blk )
         end
       end
+
+      def get_with_current &blk
+        with_binding blk.binding do
+          get! blk.()
+        end
+      end
+
       def with_binding a_binding, &blk
         push_binding a_binding
         _invoke blk, self
