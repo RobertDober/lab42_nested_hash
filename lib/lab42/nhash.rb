@@ -17,12 +17,12 @@ module Lab42
     forward :pop_binding, to: :@binding_stack, as: :pop
     forward :push_binding, to: :@binding_stack, as: :push
 
-    attr_reader :hashy
+    attr_reader :hashy, :parent
 
     def export_options
       { indifferent_access: @indifferent_access,
         binding_stack: @binding_stack.dup,
-        default_binding: @default_binding
+        parent: @parent
       }
     end
 
@@ -40,12 +40,14 @@ module Lab42
     def import_options options
       @indifferent_access = options[:indifferent_access]
       @binding_stack      = options[:binding_stack] || []
-      @default_binding    = options[:default_binding] # if options[:default_binding]
+      @parent             = options[:parent]
       self
     end
 
     def with_indifferent_access
-      self.class.new( @hashy ).import_options indifferent_access: true
+      self.class.new( @hashy ).tap do |rv|
+        rv.instance_variable_set :@indifferent_access, true
+      end
     end
 
     private
@@ -71,11 +73,13 @@ module Lab42
     end
 
     def initialize hashy
-      @hashy = hashy
+      @hashy  = hashy
       init_options
     end
 
     def init_options
+      @parent = self
+
       @indifferent_access       = false
       @suffix_stack             = []
       @prefix_stack             = []
@@ -83,7 +87,6 @@ module Lab42
 
       @fallbacks                = []
       @current_fallback_pointer = 0
-      @default_binding          = nil
     end
   end # class NHash
 end # module Lab42

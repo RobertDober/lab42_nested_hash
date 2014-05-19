@@ -10,6 +10,8 @@ module Lab42
       
       include Enumerable
 
+      attr_reader :parent
+
       def [] idx
         Lab42::NHash.from_value @enum[idx], @options
       end
@@ -17,7 +19,7 @@ module Lab42
       private
       def initialize enum, options
         @enum  = enum
-        @options = options
+        @parent = options[:parent]
       end
 
     end # class Enum
