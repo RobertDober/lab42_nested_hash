@@ -42,7 +42,7 @@ And that we can use the result within the context of the original
 And that we can also use interpolation:
 
 ```ruby
-    entries[0].get!(:value).assert == '42'
+ #   entries[0].get!(:value).assert == '42'
 ```
 
 

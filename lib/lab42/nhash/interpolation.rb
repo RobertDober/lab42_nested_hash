@@ -28,11 +28,14 @@ module Lab42
         pop_binding
       end
 
-      private
       def current_binding
-        @binding_stack.last || @default_binding || binding
+        @binding_stack.last || ( root? ? binding : parent.current_binding )
       end
 
+      def root?
+        parent == self || parent.nil?
+      end
+      private
       def _expand_result value
         ERB.new( value ).result( current_binding )
       end

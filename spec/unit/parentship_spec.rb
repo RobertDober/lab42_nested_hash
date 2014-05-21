@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe NHash do 
-  context :parentship, :wip do
+  context :parentship do
     subject do
       NHash.new(
         a: 42,
