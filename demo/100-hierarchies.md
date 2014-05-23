@@ -3,6 +3,35 @@
 
 ## Hierarchies
 
+Hierarchies are chains of `NHash` instances that are *looked_up* if a `get` fails.
+
+As each instance can have mant hierarchies they hierarchy lookup consists of a Depth First Tree Search.
+
+Here is an example:
+
+```ruby
+    root = NHash.new( a: 1 ).with_indifferent_access
+     one = NHash.new( b: 2 ).with_indifferent_access
+     two = NHash.new( b: :never_found )
+      .with_indifferent_access
+      .add_hierarchy( c: 3 )
+    three = NHash.new( c: :never_found )
+
+    root.add_hierarchies one, two, three 
+```
+
+This constructed a tree like the following (denoting `:never_found` with a `\*`)
+
+
+```
+                             +------+
+                             | a: 1 |
+                             +------+
+    
+```
+
+### Hierarchies and Lookup Chains
+
 At first sight these might be easily confused with _Lookup Chains_. However the difference is easy to explain:
 
 While a _lookup_ (or a _fallback_ for that matter) *always* operates on the same NHash hierarchie, meaning
@@ -73,4 +102,4 @@ from its root, e.g. affix chains or fallbacks.
   end
 ```
 
-
+### Interpolation Context
