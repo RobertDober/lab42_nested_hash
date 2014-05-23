@@ -1,5 +1,5 @@
 
-# Lab42::NHash QED 
+# Lab42::NHash QED
 
 ## Hierarchies
 
@@ -14,21 +14,44 @@ Here is an example:
      one = NHash.new( b: 2 ).with_indifferent_access
      two = NHash.new( b: :never_found )
       .with_indifferent_access
-      .add_hierarchy( c: 3 )
+      .add_hierarchy( 'c' => 3 )
     three = NHash.new( c: :never_found )
 
-    root.add_hierarchies one, two, three 
+    root.add_hierarchies one, two, three
 ```
 
-This constructed a tree like the following (denoting `:never_found` with a `\*`)
+This constructed a tree like the following (denoting `:never_found` with a `*`)
 
 
 ```
-                             +------+
-                             | a: 1 |
-                             +------+
-    
+#                             +------+
+#                             | a: 1 |
+#                             +------+
+#                               /|\
+#                              / | \
+#              +--------------.  |  .--------------+
+#              |                 |                 |
+#         +---------+       +---------+       +---------+
+#         | b:  2   +       +   b: *  +       +   c: *  +
+#         +---------+       +---------+       +---------+
+#                                |
+#                                |
+#                           +---------+
+#                           +   c: 3  +
+#                           +---------+
 ```
+
+Therefore the following assertions hold:
+
+```ruby
+    root.get( :a ).assert == 1
+    root.get( :b ).assert == 2
+    root.get( :c ).assert == 3
+    KeyError.assert.raised? do
+      root.get :d
+    end
+```
+
 
 ### Hierarchies and Lookup Chains
 
@@ -48,7 +71,7 @@ The concept is very easy to understand when demonstrated on an example, so what 
       en: { '1' => :one, '2' => :two },
       fr: {  '2' => :deux })
       .with_indifferent_access
-    
+
 ```
 
 Let us at first demonstrate the lookup chain for a reminder.
@@ -57,7 +80,7 @@ Let us at first demonstrate the lookup chain for a reminder.
     nh1.push_prefix_lookup :fr, :en
     nh1.with_prefix :de do
       nh1.get( '.1' ).assert == :one
-    end 
+    end
 ```
 
 And now we add another `NHash` instance as a hierarchy:
@@ -90,7 +113,7 @@ The same holds if prefix lookup fails, as in these cases:
    nh1.get( 'de.0' ).assert == :null
 
 ```
-    
+
 If, however a hiearchy is used for a lookup, it does not inherite the other lookup strategies
 from its root, e.g. affix chains or fallbacks.
 

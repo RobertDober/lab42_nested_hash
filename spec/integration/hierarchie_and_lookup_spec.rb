@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NHash, :wip do
+describe NHash do
   context 'Hierarchy and Lookup' do 
 
     let :level2 do

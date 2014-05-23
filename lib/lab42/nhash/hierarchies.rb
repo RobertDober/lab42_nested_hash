@@ -1,7 +1,8 @@
 module Lab42
   class NHash
     module Hierarchy
-      def add_hierarchy a_hierarchy
+      def add_hierarchy a_hierarchy={}
+        a_hierarchy = self.class.new a_hierarchy if Hash === a_hierarchy
         raise ArgumentError, 'not an NHash instance' unless self.class === a_hierarchy
         @hierarchies << a_hierarchy
         self
@@ -10,6 +11,7 @@ module Lab42
         some_hierarchies.each do | a_hierarchy |
           add_hierarchy a_hierarchy
         end
+        self
       end
 
       def get_form_hierarchies keyexpr, keyexc

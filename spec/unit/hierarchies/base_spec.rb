@@ -23,5 +23,12 @@ describe NHash do
       expect( subject.get :c, 42 ).to eq 42
       expect( subject.get( :c ){ 42 } ).to eq 42
     end
+
+    context 'implicit' do 
+      it 'convertion of hashes in add_hierarchy' do
+        n = NHash.new().add_hierarchy
+        expect( n.instance_variable_get( :@hierarchies ).first ).to be_instance_of described_class
+      end
+    end # context 'implicit creation'
   end # context :hierarchies
 end # describe NHash
