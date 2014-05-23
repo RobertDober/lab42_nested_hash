@@ -43,13 +43,34 @@ And now we add another `NHash` instance as a hierarchy:
 First of all let us demonstrate that the lookup chain takes precedence over the hierarchy search
 
 ```ruby
-    nh1.get( 'fr.1' ).assert == :one
+    nh1.with_prefix :fr do
+      get( '.1' ).assert == :one
+    end
 ```
 
-However, if everything fails, we are looking into our hierarchies in FIFO order this time:
+However, this does not hold if we do not use prefixes and the hierarchy lookup will kick in instead:
+
+```ruby
+    nh1.get( 'fr.1' ).assert == :un
+```
+
+
+The same holds if prefix lookup fails, as in these cases:
 
 ```ruby
    nh1.get( 'de.0' ).assert == :null
+
+```
+    
+If, however a hiearchy is used for a lookup, it does not inherite the other lookup strategies
+from its root, e.g. affix chains or fallbacks.
+
+```ruby
+  KeyError.assert.raised? do
+     nh1.with_prefix :de do
+       get( '.0' ).assert == :null
+     end
+  end
 ```
 
 
