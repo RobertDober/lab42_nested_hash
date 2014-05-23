@@ -79,7 +79,7 @@ module Lab42
       end
     end
 
-    def initialize hashy
+    def initialize hashy={}
       @hashy  = hashy
       init_options
     end

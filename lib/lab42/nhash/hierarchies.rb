@@ -6,6 +6,11 @@ module Lab42
         @hierarchies << a_hierarchy
         self
       end
+      def add_hierarchies *some_hierarchies
+        some_hierarchies.each do | a_hierarchy |
+          add_hierarchy a_hierarchy
+        end
+      end
 
       def get_form_hierarchies keyexpr, keyexc
         @hierarchies.each do | h |
