@@ -9,6 +9,7 @@ require_relative './nhash/fallbacks'
 require_relative './nhash/lookup_chains'
 require_relative './nhash/interpolation'
 require_relative './nhash/enum'
+require_relative './nhash/hierarchies'
 
 module Lab42
   class NHash
@@ -32,10 +33,16 @@ module Lab42
       found = @indifferent_access ? _get_indiff( keys ) : _get( keys )
       self.class.from_value found, export_options
     rescue KeyError => k
-      return fallback keyexpr, k if default.empty? && defblock.nil?
+      return fallback_or_hierarchy keyexpr, k if default.empty? && defblock.nil?
       default.empty? ? defblock.(keyexpr) : default.first
     end
     alias_method :fetch, :get
+
+    def fallback_or_hierarchy keyexpr, keyexc
+      fallback keyexpr, keyexc
+    rescue KeyError => k
+      get_form_hierarchies keyexpr, k
+    end
 
     def import_options options
       @indifferent_access = options[:indifferent_access]
@@ -87,6 +94,8 @@ module Lab42
 
       @fallbacks                = []
       @current_fallback_pointer = 0
+
+      @hierarchies              = []
     end
   end # class NHash
 end # module Lab42
