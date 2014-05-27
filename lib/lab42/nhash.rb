@@ -18,7 +18,7 @@ module Lab42
     forward :pop_binding, to: :@binding_stack, as: :pop
     forward :push_binding, to: :@binding_stack, as: :push
 
-    attr_reader :hashy, :parent
+    attr_reader :hashy, :hierarchies, :parent
 
     def export_options
       { indifferent_access: @indifferent_access,
@@ -41,7 +41,7 @@ module Lab42
     def fallback_or_hierarchy keyexpr, keyexc
       fallback keyexpr, keyexc
     rescue KeyError => k
-      get_form_hierarchies keyexpr, k
+      get_from_hierarchies keyexpr, k
     end
 
     def import_options options
@@ -57,7 +57,22 @@ module Lab42
       end
     end
 
+
+    def with_indifferent_access! cache={}
+      __recursive_indifferent_access__ self, {}
+    end
     private
+
+    def __recursive_indifferent_access__ for_nhash, cache
+      return if cache[ for_nhash.object_id ]
+
+      for_nhash.with_indifferent_access
+      cache.update for_nhash.object_id => true
+
+      for_nhash.hierarchies.each do | hier |
+        __recursive_indifferent_access__ hier, cache
+      end
+    end
     def complete_keys keys, use_prefix: false, use_suffix: false
       keys =  current_prefix + keys if use_prefix
       keys += current_suffix if use_suffix
@@ -79,18 +94,18 @@ module Lab42
       end
     end
 
-    def initialize hashy={}
+    def initialize hashy={}, options={}
       @hashy  = hashy
-      init_options
+      init_options options
     end
 
-    def init_options
+    def init_options options
       @parent = self
 
-      @indifferent_access       = false
-      @suffix_stack             = []
-      @prefix_stack             = []
-      @binding_stack            = []
+      @indifferent_access       = options.fetch(:indifferent_access, false)
+      @suffix_stack             = options.fetch(:suffix_stack, [])
+      @prefix_stack             = options.fetch(:prefix_stack, [])
+      @binding_stack            = options.fetch(:binding_stack, [])
 
       @fallbacks                = []
       @current_fallback_pointer = 0

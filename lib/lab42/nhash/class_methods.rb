@@ -3,14 +3,46 @@ module Lab42
   class NHash
     module ClassMethods
 
+      def from_sources *sources
+        __from_sources__(sources)
+      end
+      
+      def from_sources_with_indifferent_access *sources
+        __from_sources__(sources, indifferent_access: true )
+      end
+
       def from_value value, options={}
         case value
         when Hash
-          Lab42::NHash.new( value ).import_options options
+          new( value ).import_options options
         when Enumerable
           Lab42::NHash::Enum.new value, options
         else
           value
+        end
+      end
+
+      private
+      def __from_sources__ sources, indifferent_access: false
+        sources = sources.map{ |source|
+          make_nhash_from source, indifferent_access: indifferent_access
+        }
+        result = sources.shift
+        sources.inject result do | r, s |
+          r.add_hierarchy s
+          s
+        end
+        result
+      end
+
+      def make_nhash_from source, indifferent_access: false
+        case source
+        when Hash
+          new source, indifferent_access: indifferent_access
+        when self
+          indifferent_access ? source.dup.with_indifferent_access : source.dup
+        else
+          raise ArgumentError, "this #{source} type is not implemented"
         end
       end
     end # module ClassMethods

@@ -20,7 +20,7 @@ Here is an example:
     root.add_hierarchies one, two, three
 ```
 
-This constructed a tree like the following (denoting `:never_found` with a `*`)
+This constructed a tree like the following (denoting `:never_found` by a `*`)
 
 
 ```
@@ -124,5 +124,6 @@ from its root, e.g. affix chains or fallbacks.
      end
   end
 ```
+
 
 ### Interpolation Context

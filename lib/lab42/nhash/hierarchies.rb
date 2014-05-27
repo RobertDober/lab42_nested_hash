@@ -14,7 +14,7 @@ module Lab42
         self
       end
 
-      def get_form_hierarchies keyexpr, keyexc
+      def get_from_hierarchies keyexpr, keyexc
         @hierarchies.each do | h |
           begin
             return h.get keyexpr
