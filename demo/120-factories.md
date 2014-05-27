@@ -37,3 +37,34 @@ This can be done too, of course (note again that all keys are transformed to str
 ```
 
 
+### Creating Hierarchies from YAML Files
+
+The same works if the data is inside a Yaml file
+
+```ruby
+    given_a_file named: "one.yml", with: <<-EOF
+      a: 1
+    EOF
+    and_given_a_file named: "two.yml", with: <<-EOF
+      a: 2
+      b: 2
+    EOF
+```
+
+Now if we invoke `from_sources` with strings, denoting these files, these strings will be replaced by an `NHash` instance
+initialized with the `Hash` resulting from YAML loading the content of the file
+Now if we invoke icodefrom_sourceswith strings, denoting these files, these strings will be replaced by an icodeNHashinstance
+initialized with the icodeHashresulting from YAML loading the content of the file
+
+Or in short ;) :
+
+```ruby
+    yaml_hierarchy = NHash.from_sources 'one.yml', 'two.yml'
+
+    yaml_hierarchy.get( :a ).assert == 1
+    yaml_hierarchy.get( :b ).assert == 2
+    KeyError.assert.raised? do
+      yaml_hierarchy.get :c
+    end
+```
+

@@ -1,4 +1,7 @@
 require_relative 'enum'
+
+require 'yaml'
+
 module Lab42
   class NHash
     module ClassMethods
@@ -41,8 +44,11 @@ module Lab42
           new source, indifferent_access: indifferent_access
         when self
           indifferent_access ? source.dup.with_indifferent_access : source.dup
+        when String
+          raise ArgumentError, "#{source.inspect} needs to designate a readable yaml file" unless File.readable? source
+          new YAML.load( File.read source ), indifferent_access: indifferent_access
         else
-          raise ArgumentError, "this #{source} type is not implemented"
+          raise ArgumentError, "type of value #{source.inspect} is not implemented (yet)"
         end
       end
     end # module ClassMethods
