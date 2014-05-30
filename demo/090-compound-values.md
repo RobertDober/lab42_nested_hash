@@ -45,6 +45,34 @@ And that we can also use interpolation:
  #   entries[0].get!(:value).assert == '42'
 ```
 
+### Enhanced Search
+
+`NHash::Enum` of course implements `Enumerable`. However, when looking for keys we need to rescue from `KeyError` very frequently.
+
+Here is a demonstration of that.
+
+```ruby
+    nh = NHash.new(
+          entries: [
+            {a: 1},
+            {b: 2}
+          ])
+          .with_indifferent_access
+```
+
+In order to find `b` the quite obvious code is
+
+```ruby
+    nh.get( :entries ).find{ |entry|
+      begin
+        entry.get(:b)
+      rescue KeyError
+      end
+    }.get(:b).assert == 2
+```
+
+Now that code is not very readabl, is it? Being cluttered by the rescue blcok
+
 
 
 

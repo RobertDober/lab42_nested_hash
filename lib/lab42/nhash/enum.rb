@@ -17,6 +17,13 @@ module Lab42
       def [] idx
         Lab42::NHash.from_value @enum[idx], @options
       end
+      
+      def each blk=nil, &block
+        behavior = blk || block
+        @enum.each do | ele |
+          behavior.( Lab42::NHash.from_value ele, @options )
+        end
+      end
 
       def fetch! idx
         result = self[ idx ]
