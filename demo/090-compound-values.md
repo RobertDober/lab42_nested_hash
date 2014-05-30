@@ -58,12 +58,13 @@ Here is a demonstration of that.
             {b: 2}
           ])
           .with_indifferent_access
+    entries = nh.get :entries
 ```
 
 In order to find `b` the quite obvious code is
 
 ```ruby
-    nh.get( :entries ).find{ |entry|
+    entries.find{ |entry|
       begin
         entry.get(:b)
       rescue KeyError
@@ -71,7 +72,31 @@ In order to find `b` the quite obvious code is
     }.get(:b).assert == 2
 ```
 
-Now that code is not very readabl, is it? Being cluttered by the rescue blcok
+Now that code is not very readable, is it? Being cluttered by the rescue block and needing to invoke the get again?
+
+Here is how we would like to write (and read) that kind of code:
+
+```ruby
+    entries.get{ |entry|
+      entry.get :b
+    }.assert == 2
+```
+
+This can even be shortened to
+
+```ruby
+    entries.get{ 2 * get(:b) }
+      .assert == 4
+```
+
+or
+
+```ruby
+    entries.get(:b).assert == 2
+```
+
+
+
 
 
 
